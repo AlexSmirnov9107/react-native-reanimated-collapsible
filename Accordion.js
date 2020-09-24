@@ -1,6 +1,5 @@
 import React, { useMemo, useReducer } from 'react';
 import Animated, { Easing } from 'react-native-reanimated';
-import PropTypes from 'prop-types';
 
 const {
   Value,
@@ -24,13 +23,9 @@ const reducer = (state, action) => {
   }
 };
 
-const AccordionWrapper = ({
-  style,
-  children,
-  expand,
-  initOpen = false,
-  duration = 400,
-}) => {
+const Accordion = (props) => {
+  const { style, children, expand, initOpen = false, duration = 400 } = props;
+
   const [reducerState, dispatch] = useReducer(reducer, {
     height: new Value(0),
     done: false,
@@ -40,7 +35,7 @@ const AccordionWrapper = ({
 
   let { animatedHeight, initOpenDone } = useMemo(
     () => ({
-      animatedHeight: new Value(0),
+      animatedHeight: new Value(undefined),
       initOpenDone: new Value(0),
     }),
     [],
@@ -78,10 +73,9 @@ const AccordionWrapper = ({
       ]),
     ]);
   }, [expand, done]);
-
   return (
     <Animated.View
-      onLayout={e => {
+      onLayout={(e) => {
         if (e.nativeEvent.layout.height && !done) {
           dispatch({
             type: 'initialize',
@@ -105,18 +99,4 @@ const AccordionWrapper = ({
   );
 };
 
-AccordionWrapper.propTypes = {
-  style: PropTypes.object,
-  children: PropTypes.node.isRequired,
-  expand: PropTypes.bool.isRequired,
-  initOpen: PropTypes.bool,
-  duration: PropTypes.number,
-};
-
-AccordionWrapper.defaultProps = {
-  style: {},
-  initOpen: false,
-  duration: 400,
-};
-
-export default AccordionWrapper;
+export default Accordion;
