@@ -55,7 +55,6 @@ const Accordion = (props) => {
       duration,
       easing: Easing.linear,
     };
-
     return block([
       cond(and(eq(initOpen, 1), eq(initOpenDone, 0)), [
         set(animatedHeight, height),
@@ -73,6 +72,7 @@ const Accordion = (props) => {
       ]),
     ]);
   }, [expand, done]);
+
   return (
     <Animated.View
       onLayout={(e) => {
@@ -91,7 +91,7 @@ const Accordion = (props) => {
         // eslint-disable-next-line react-native/no-inline-styles
         {
           overflow: 'hidden',
-          height: initOpen && !done ? undefined : animatedHeight,
+          height: !done ? undefined : animatedHeight,
         },
       ]}>
       {children}
