@@ -35,7 +35,7 @@ const Accordion = (props) => {
 
   let { animatedHeight, initOpenDone } = useMemo(
     () => ({
-      animatedHeight: new Value(undefined),
+      animatedHeight: new Value(0),
       initOpenDone: new Value(0),
     }),
     [],
