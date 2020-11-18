@@ -75,7 +75,16 @@ const Accordion = (props) => {
 
   return (
     <Animated.View
-      onLayout={(e) => {
+     
+      style={[
+        style,
+        // eslint-disable-next-line react-native/no-inline-styles
+        {
+          overflow: 'hidden',
+          height: !done ? undefined : animatedHeight,
+        },
+      ]}>
+        <Animated.View  onLayout={(e) => {
         if (e.nativeEvent.layout.height && !done) {
           dispatch({
             type: 'initialize',
@@ -85,16 +94,14 @@ const Accordion = (props) => {
             },
           });
         }
-      }}
-      style={[
-        style,
-        // eslint-disable-next-line react-native/no-inline-styles
-        {
-          overflow: 'hidden',
-          height: !done ? undefined : animatedHeight,
-        },
-      ]}>
-      {children}
+      }} style={{
+          position:'absolute',
+          right:0,
+          left:0
+        }}>
+            {children}
+        </Animated.View>
+      
     </Animated.View>
   );
 };
