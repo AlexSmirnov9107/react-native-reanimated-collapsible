@@ -55,6 +55,7 @@ const Accordion = (props) => {
       duration,
       easing: Easing.linear,
     };
+
     return block([
       cond(and(eq(initOpen, 1), eq(initOpenDone, 0)), [
         set(animatedHeight, height),
@@ -72,19 +73,9 @@ const Accordion = (props) => {
       ]),
     ]);
   }, [expand, done]);
-
   return (
     <Animated.View
-     
-      style={[
-        style,
-        // eslint-disable-next-line react-native/no-inline-styles
-        {
-          overflow: 'hidden',
-          height: !done ? undefined : animatedHeight,
-        },
-      ]}>
-        <Animated.View  onLayout={(e) => {
+      onLayout={(e) => {
         if (e.nativeEvent.layout.height && !done) {
           dispatch({
             type: 'initialize',
@@ -94,14 +85,16 @@ const Accordion = (props) => {
             },
           });
         }
-      }} style={{
-          position:'absolute',
-          right:0,
-          left:0
-        }}>
-            {children}
-        </Animated.View>
-      
+      }}
+      style={[
+        style,
+        // eslint-disable-next-line react-native/no-inline-styles
+        {
+          overflow: 'hidden',
+          height: !done ? undefined : animatedHeight,
+        },
+      ]}>
+      {children}
     </Animated.View>
   );
 };
