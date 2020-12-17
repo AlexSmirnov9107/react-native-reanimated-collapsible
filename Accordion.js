@@ -1,4 +1,5 @@
-import React, { useMemo, useReducer } from 'react';
+import React, { useMemo, useReducer, useRef, useEffect, useState } from 'react';
+import { View } from 'react-native';
 import Animated, { Easing } from 'react-native-reanimated';
 
 const {
@@ -12,6 +13,9 @@ const {
   set,
   useCode,
   and,
+  clockRunning,
+  stopClock,
+  debug
 } = Animated;
 
 const reducer = (state, action) => {
@@ -22,9 +26,39 @@ const reducer = (state, action) => {
       state;
   }
 };
+function runTiming(clock, value, dest) {
+  const state = {
+    finished: new Value(0),
+    position: value, 
+    time: new Value(0),
+    frameTime: new Value(0),
+  };
+
+  const config = {
+    duration: 1000,
+    toValue: dest, 
+    easing: Easing.inOut(Easing.cubic), 
+  };
+  
+  return block([
+   
+    cond(clockRunning(clock), 0, [
+   
+      set(state.finished, 0), 
+      set(state.time, 0),
+      set(state.position, value),
+      set(state.frameTime, 0),
+      set(config.toValue, dest),
+      startClock(clock),
+    ]),
+    timing(clock, state, config),
+    cond(state.finished, debug('stop clock', stopClock(clock))), 
+    state.position,
+  ]);
+}
 
 const Accordion = (props) => {
-  const { style, children, expand, initOpen = false, duration = 400 } = props;
+  const { style, children, expand, initOpen = false, duration = 400, update } = props;
 
   const [reducerState, dispatch] = useReducer(reducer, {
     height: new Value(0),
@@ -44,6 +78,7 @@ const Accordion = (props) => {
   const clock = new Clock();
 
   useCode(() => {
+    
     const state = {
       position: animatedHeight,
       finished: new Value(0),
@@ -73,6 +108,22 @@ const Accordion = (props) => {
       ]),
     ]);
   }, [expand, done]);
+
+  const viewRef = useRef();
+  useEffect(() => {
+      viewRef.current.measure((x,y,w,h,px,py)=>{
+      if (done){
+        height.setValue(h);
+        // animatedHeight = runTiming(new Clock(),new Value(animatedHeight),new Value(h))
+        // animatedHeight.setValue(h)
+        Animated.timing(animatedHeight,{
+          duration:100,
+          toValue:h,
+          easing:Easing.linear
+        }).start()
+      }
+    })
+  },[update])
   return (
     <Animated.View
       onLayout={(e) => {
@@ -91,10 +142,12 @@ const Accordion = (props) => {
         // eslint-disable-next-line react-native/no-inline-styles
         {
           overflow: 'hidden',
-          height: !done ? undefined : animatedHeight,
+          height: initOpen && !done ? undefined : animatedHeight,
         },
       ]}>
-      {children}
+      <View ref={viewRef}>
+        {children}
+      </View>
     </Animated.View>
   );
 };
