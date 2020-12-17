@@ -15,7 +15,7 @@ const {
   and,
   clockRunning,
   stopClock,
-  debug
+  debug,
 } = Animated;
 
 const reducer = (state, action) => {
@@ -29,22 +29,20 @@ const reducer = (state, action) => {
 function runTiming(clock, value, dest) {
   const state = {
     finished: new Value(0),
-    position: value, 
+    position: value,
     time: new Value(0),
     frameTime: new Value(0),
   };
 
   const config = {
     duration: 1000,
-    toValue: dest, 
-    easing: Easing.inOut(Easing.cubic), 
+    toValue: dest,
+    easing: Easing.inOut(Easing.cubic),
   };
-  
+
   return block([
-   
     cond(clockRunning(clock), 0, [
-   
-      set(state.finished, 0), 
+      set(state.finished, 0),
       set(state.time, 0),
       set(state.position, value),
       set(state.frameTime, 0),
@@ -52,13 +50,20 @@ function runTiming(clock, value, dest) {
       startClock(clock),
     ]),
     timing(clock, state, config),
-    cond(state.finished, debug('stop clock', stopClock(clock))), 
+    cond(state.finished, debug('stop clock', stopClock(clock))),
     state.position,
   ]);
 }
 
 const Accordion = (props) => {
-  const { style, children, expand, initOpen = false, duration = 400, update } = props;
+  const {
+    style,
+    children,
+    expand,
+    initOpen = false,
+    duration = 400,
+    update,
+  } = props;
 
   const [reducerState, dispatch] = useReducer(reducer, {
     height: new Value(0),
@@ -78,7 +83,6 @@ const Accordion = (props) => {
   const clock = new Clock();
 
   useCode(() => {
-    
     const state = {
       position: animatedHeight,
       finished: new Value(0),
@@ -111,19 +115,18 @@ const Accordion = (props) => {
 
   const viewRef = useRef();
   useEffect(() => {
-      viewRef.current.measure((x,y,w,h,px,py)=>{
-      if (done){
+    viewRef.current.measure((x, y, w, h, px, py) => {
+      if (done) {
         height.setValue(h);
-        // animatedHeight = runTiming(new Clock(),new Value(animatedHeight),new Value(h))
-        // animatedHeight.setValue(h)
-        Animated.timing(animatedHeight,{
-          duration:100,
-          toValue:h,
-          easing:Easing.linear
-        }).start()
+        animatedHeight.setValue(h);
+        // Animated.timing(animatedHeight,{
+        //   duration:100,
+        //   toValue:h,
+        //   easing:Easing.linear
+        // }).start()
       }
-    })
-  },[update])
+    });
+  }, [update]);
   return (
     <Animated.View
       onLayout={(e) => {
@@ -145,9 +148,7 @@ const Accordion = (props) => {
           height: initOpen && !done ? undefined : animatedHeight,
         },
       ]}>
-      <View ref={viewRef}>
-        {children}
-      </View>
+      <View ref={viewRef}>{children}</View>
     </Animated.View>
   );
 };
