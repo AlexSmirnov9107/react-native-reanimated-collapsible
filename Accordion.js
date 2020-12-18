@@ -116,7 +116,7 @@ const Accordion = (props) => {
   const viewRef = useRef();
   useEffect(() => {
     viewRef.current.measure((x, y, w, h, px, py) => {
-      if (done) {
+      if (done && h) {
         height.setValue(h);
         animatedHeight.setValue(h);
         // Animated.timing(animatedHeight,{
@@ -148,7 +148,9 @@ const Accordion = (props) => {
           height: initOpen && !done ? undefined : animatedHeight,
         },
       ]}>
-      <View ref={viewRef}>{children}</View>
+      <View collapsable={false} ref={viewRef}>
+        {children}
+      </View>
     </Animated.View>
   );
 };
