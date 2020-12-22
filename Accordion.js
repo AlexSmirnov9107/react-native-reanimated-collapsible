@@ -148,7 +148,7 @@ const Accordion = (props) => {
           height: !done ? undefined : animatedHeight,
         },
       ]}>
-      <View removeClippedSubviews={false} collapsable={false} ref={viewRef}>
+      <View removeClippedSubviews={false} collapsable={true} ref={viewRef}>
         {children}
       </View>
     </Animated.View>
