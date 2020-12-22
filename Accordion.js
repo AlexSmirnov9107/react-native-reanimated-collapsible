@@ -100,12 +100,12 @@ const Accordion = (props) => {
         set(animatedHeight, height),
         set(initOpenDone, 1),
       ]),
-      cond(eq(expand, initOpen ? 0 : 1), [
+      cond(eq(expand, 1), [
         set(config.toValue, height),
         startClock(clock),
         timing(clock, state, config),
       ]),
-      cond(eq(expand, initOpen ? 1 : 0), [
+      cond(eq(expand, 0), [
         set(config.toValue, 0),
         startClock(clock),
         timing(clock, state, config),
@@ -126,7 +126,7 @@ const Accordion = (props) => {
         // }).start()
       }
     });
-  }, [update]);
+  }, [update, expand]);
   return (
     <Animated.View
       onLayout={(e) => {
@@ -145,10 +145,10 @@ const Accordion = (props) => {
         // eslint-disable-next-line react-native/no-inline-styles
         {
           overflow: 'hidden',
-          height: initOpen && !done ? undefined : animatedHeight,
+          height: !done ? undefined : animatedHeight,
         },
       ]}>
-      <View collapsable={false} ref={viewRef}>
+      <View removeClippedSubviews={false} collapsable={false} ref={viewRef}>
         {children}
       </View>
     </Animated.View>
