@@ -126,7 +126,7 @@ const Accordion = (props) => {
         // }).start()
       }
     });
-  }, [update, expand]);
+  }, [update]);
   return (
     <Animated.View
       onLayout={(e) => {
