@@ -146,6 +146,8 @@ const Accordion = (props) => {
         {
           overflow: 'hidden',
           height: !done ? undefined : animatedHeight,
+          opacity: !done ? 0 : 1,
+          position: !done ? 'absolute' : 'relative',
         },
       ]}>
       <View removeClippedSubviews={false} collapsable={true} ref={viewRef}>
